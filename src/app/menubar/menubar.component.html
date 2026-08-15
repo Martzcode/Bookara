@@ -1,5 +1,5 @@
 <nav class="menubar">
-  @for (menu of menus; track menu.id) {
+  @for (menu of menus(); track menu.id) {
     <div class="menu">
       <button
         type="button"
@@ -25,6 +25,7 @@
               (click)="onItemClick(item, i)"
               (mouseenter)="onItemEnter(i)"
             >
+              <span class="menu-entry-icon">{{ item.checked ? "✓" : "" }}</span>
               <span class="menu-entry-label">{{ item.label }}</span>
               @if (item.shortcut) {
                 <span class="menu-entry-shortcut">{{ item.shortcut }}</span>

@@ -2,14 +2,18 @@ import {
   Component,
   ElementRef,
   HostListener,
+  computed,
   inject,
 } from "@angular/core";
+import { LanguageService } from "../i18n/language.service";
+import { languageNames, supportedLangs, type Lang } from "../i18n/translations";
 
 interface MenuItem {
   id: string;
   label: string;
   shortcut?: string;
   dividerAfter?: boolean;
+  checked?: boolean;
   action?: () => void;
 }
 
@@ -27,57 +31,87 @@ interface Menu {
 })
 export class MenubarComponent {
   private elementRef = inject(ElementRef);
+  private languageService = inject(LanguageService);
 
-  menus: Menu[] = [
-    {
-      id: "file",
-      label: "Fichier",
-      items: [
-        { id: "new", label: "Nouveau", shortcut: "Ctrl+N" },
-        { id: "open", label: "Ouvrir…", shortcut: "Ctrl+O" },
-        { id: "save", label: "Enregistrer", shortcut: "Ctrl+S" },
-        { id: "save-as", label: "Enregistrer sous…" },
-        { id: "exit", label: "Quitter", shortcut: "Alt+F4", dividerAfter: true },
-      ],
-    },
-    {
-      id: "edit",
-      label: "Édition",
-      items: [
-        { id: "undo", label: "Annuler", shortcut: "Ctrl+Z" },
-        { id: "redo", label: "Rétablir", shortcut: "Ctrl+Y", dividerAfter: true },
-        { id: "cut", label: "Couper", shortcut: "Ctrl+X" },
-        { id: "copy", label: "Copier", shortcut: "Ctrl+C" },
-        { id: "paste", label: "Coller", shortcut: "Ctrl+V", dividerAfter: true },
-        { id: "select-all", label: "Tout sélectionner", shortcut: "Ctrl+A" },
-      ],
-    },
-    {
-      id: "view",
-      label: "Affichage",
-      items: [
-        { id: "fullscreen", label: "Plein écran", shortcut: "F11" },
-        { id: "zoom-in", label: "Zoom avant", shortcut: "Ctrl++" },
-        { id: "zoom-out", label: "Zoom arrière", shortcut: "Ctrl+-" },
-        { id: "zoom-reset", label: "Réinitialiser le zoom", shortcut: "Ctrl+0" },
-      ],
-    },
-    {
-      id: "help",
-      label: "Aide",
-      items: [
-        { id: "docs", label: "Documentation" },
-        { id: "report", label: "Signaler un problème" },
-        { id: "about", label: "À propos de Bookara", dividerAfter: true },
-      ],
-    },
-  ];
+  menus = computed<Menu[]>(() => {
+    const t = (key: string) => this.languageService.translate(key);
+    const lang = this.languageService.currentLang();
+
+    return [
+      {
+        id: "file",
+        label: t("menu.file"),
+        items: [
+          { id: "new", label: t("file.new"), shortcut: "Ctrl+N" },
+          { id: "open", label: t("file.open"), shortcut: "Ctrl+O" },
+          { id: "save", label: t("file.save"), shortcut: "Ctrl+S" },
+          { id: "save-as", label: t("file.saveAs") },
+          {
+            id: "exit",
+            label: t("file.exit"),
+            shortcut: "Alt+F4",
+            dividerAfter: true,
+          },
+        ],
+      },
+      {
+        id: "edit",
+        label: t("menu.edit"),
+        items: [
+          { id: "undo", label: t("edit.undo"), shortcut: "Ctrl+Z" },
+          {
+            id: "redo",
+            label: t("edit.redo"),
+            shortcut: "Ctrl+Y",
+            dividerAfter: true,
+          },
+          { id: "cut", label: t("edit.cut"), shortcut: "Ctrl+X" },
+          { id: "copy", label: t("edit.copy"), shortcut: "Ctrl+C" },
+          { id: "paste", label: t("edit.paste"), shortcut: "Ctrl+V", dividerAfter: true },
+          { id: "select-all", label: t("edit.selectAll"), shortcut: "Ctrl+A" },
+        ],
+      },
+      {
+        id: "view",
+        label: t("menu.view"),
+        items: [
+          { id: "fullscreen", label: t("view.fullscreen"), shortcut: "F11" },
+          { id: "zoom-in", label: t("view.zoomIn"), shortcut: "Ctrl++" },
+          { id: "zoom-out", label: t("view.zoomOut"), shortcut: "Ctrl+-" },
+          { id: "zoom-reset", label: t("view.zoomReset"), shortcut: "Ctrl+0" },
+        ],
+      },
+      {
+        id: "language",
+        label: t("menu.language"),
+        items: supportedLangs.map((code: Lang) => ({
+          id: `lang-${code}`,
+          label: languageNames[code],
+          checked: lang === code,
+          action: () => this.languageService.setLang(code),
+        })),
+      },
+      {
+        id: "help",
+        label: t("menu.help"),
+        items: [
+          { id: "docs", label: t("help.docs") },
+          { id: "report", label: t("help.report") },
+          {
+            id: "about",
+            label: t("help.about"),
+            dividerAfter: true,
+          },
+        ],
+      },
+    ];
+  });
 
   openMenu: string | null = null;
   focusedIndex: number | null = null;
 
   get currentItems(): MenuItem[] {
-    const menu = this.menus.find((m) => m.id === this.openMenu);
+    const menu = this.menus().find((m) => m.id === this.openMenu);
     return menu ? menu.items : [];
   }
 
