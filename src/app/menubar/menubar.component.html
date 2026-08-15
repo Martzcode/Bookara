@@ -1,0 +1,42 @@
+<nav class="menubar">
+  @for (menu of menus; track menu.id) {
+    <div class="menu">
+      <button
+        type="button"
+        class="menu-button"
+        [class.open]="openMenu === menu.id"
+        (click)="toggleMenu(menu.id)"
+        (mouseenter)="onMenuEnter(menu.id)"
+      >
+        {{ menu.label }}
+      </button>
+
+      @if (openMenu === menu.id) {
+        <div
+          class="menu-panel"
+          role="menu"
+          (keydown)="onPanelKeydown($event)"
+        >
+          @for (item of menu.items; track item.id; let i = $index) {
+            <div
+              role="menuitem"
+              class="menu-entry"
+              [class.active]="focusedIndex === i"
+              (click)="onItemClick(item, i)"
+              (mouseenter)="onItemEnter(i)"
+            >
+              <span class="menu-entry-label">{{ item.label }}</span>
+              @if (item.shortcut) {
+                <span class="menu-entry-shortcut">{{ item.shortcut }}</span>
+              }
+            </div>
+
+            @if (item.dividerAfter) {
+              <div class="menu-divider"></div>
+            }
+          }
+        </div>
+      }
+    </div>
+  }
+</nav>
