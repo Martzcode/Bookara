@@ -25,10 +25,12 @@
               (click)="onItemClick(item, i)"
               (mouseenter)="onItemEnter(i)"
             >
-              <span class="menu-entry-icon">{{ item.checked ? "✓" : "" }}</span>
               <span class="menu-entry-label">{{ item.label }}</span>
               @if (item.shortcut) {
                 <span class="menu-entry-shortcut">{{ item.shortcut }}</span>
+              }
+              @if (item.checked) {
+                <span class="menu-entry-check">✓</span>
               }
             </div>
 

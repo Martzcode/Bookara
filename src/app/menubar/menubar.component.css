@@ -46,7 +46,6 @@
 
 .menu-entry {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 5px 14px 5px 12px;
   font-size: 12px;
@@ -56,9 +55,22 @@
   outline: none;
 }
 
-.menu-entry-icon {
-  width: 16px;
-  text-align: center;
+.menu-entry-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menu-entry-shortcut {
+  color: var(--color-shortcut);
+  margin-left: 24px;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.menu-entry-check {
+  margin-left: 24px;
   flex-shrink: 0;
 }
 
