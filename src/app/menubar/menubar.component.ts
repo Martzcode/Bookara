@@ -5,6 +5,8 @@ import {
   computed,
   inject,
 } from "@angular/core";
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import { BookService } from "../services/book.service";
 import { LanguageService } from "../i18n/language.service";
 import { languageNames, supportedLangs, type Lang } from "../i18n/translations";
 
@@ -32,6 +34,8 @@ interface Menu {
 export class MenubarComponent {
   private elementRef = inject(ElementRef);
   private languageService = inject(LanguageService);
+  private bookService = inject(BookService);
+  private window = getCurrentWindow();
 
   menus = computed<Menu[]>(() => {
     const t = (key: string) => this.languageService.translate(key);
@@ -42,8 +46,17 @@ export class MenubarComponent {
         id: "file",
         label: t("menu.file"),
         items: [
-          { id: "new", label: t("file.new"), shortcut: "Ctrl+N" },
-          { id: "open", label: t("file.open"), shortcut: "Ctrl+O" },
+          {
+            id: "open",
+            label: t("file.open"),
+            shortcut: "Ctrl+O",
+            action: () => void this.bookService.openBook(),
+          },
+          {
+            id: "close",
+            label: t("file.close"),
+            action: () => this.bookService.closeBook(),
+          },
           { id: "save", label: t("file.save"), shortcut: "Ctrl+S" },
           { id: "save-as", label: t("file.saveAs") },
           {
@@ -51,6 +64,7 @@ export class MenubarComponent {
             label: t("file.exit"),
             shortcut: "Alt+F4",
             dividerAfter: true,
+            action: () => void this.window.close(),
           },
         ],
       },
@@ -179,6 +193,14 @@ export class MenubarComponent {
   @HostListener("document:keydown.escape")
   onDocumentEscape(): void {
     this.close();
+  }
+
+  @HostListener("document:keydown", ["$event"])
+  onDocumentKeydown(event: KeyboardEvent): void {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "o") {
+      event.preventDefault();
+      void this.bookService.openBook();
+    }
   }
 
   @HostListener("document:click", ["$event"])

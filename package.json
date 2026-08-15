@@ -6,7 +6,11 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "copy:worker": "node -e \"require('fs').copyFileSync('node_modules/pdfjs-dist/build/pdf.worker.min.mjs','src/assets/pdf.worker.min.mjs')\"",
+    "prebuild": "npm run copy:worker",
+    "prestart": "npm run copy:worker",
+    "pretauri": "npm run copy:worker"
   },
   "private": true,
   "dependencies": {
@@ -17,8 +21,11 @@
     "@angular/platform-browser": "^20.1.4",
     "@angular/router": "^20.1.4",
     "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-dialog": "^2.7.2",
     "@tauri-apps/plugin-opener": "^2",
     "@tauri-apps/plugin-os": "^2.3.2",
+    "epubjs": "^0.3.93",
+    "pdfjs-dist": "^6.2.108",
     "rxjs": "~7.8.2",
     "tslib": "^2.8.1",
     "zone.js": "~0.15.1"
@@ -29,5 +36,9 @@
     "@angular/compiler-cli": "^20.1.4",
     "@tauri-apps/cli": "^2",
     "typescript": "~5.8.3"
+  },
+  "overrides": {
+    "xmldom": "npm:@xmldom/xmldom@^0.8.13",
+    "@xmldom/xmldom": "^0.8.13"
   }
 }

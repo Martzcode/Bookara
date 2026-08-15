@@ -1,0 +1,27 @@
+<div class="book-viewer">
+  <header class="book-toolbar">
+    <button class="nav-button" (click)="prev()" [disabled]="!canPrev()">‹</button>
+    <span class="book-page">
+      @if (totalPages()) {
+        {{ currentPage() }} / {{ totalPages() }}
+      } @else {
+        {{ currentPage() }}
+      }
+    </span>
+    <span class="book-title" title="{{ book.name }}">{{ book.name }}</span>
+    <button class="nav-button" (click)="next()" [disabled]="!canNext()">›</button>
+  </header>
+  <div class="book-content">
+    @if (loading()) {
+      <div class="status">{{ translate("book.loading") }}</div>
+    } @else if (error()) {
+      <div class="status error">{{ error() }}</div>
+    } @else {
+      @if (book.format === "pdf") {
+        <canvas class="pdf-canvas"></canvas>
+      } @else {
+        <div class="epub-container"></div>
+      }
+    }
+  </div>
+</div>

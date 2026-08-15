@@ -1,23 +1,22 @@
-import { Component } from "@angular/core";
-import { RouterOutlet } from "@angular/router";
-import { invoke } from "@tauri-apps/api/core";
+import { Component, inject } from "@angular/core";
 import { TitlebarComponent } from "./titlebar/titlebar.component";
+import { BookViewerComponent } from "./book-viewer/book-viewer.component";
+import { BookService } from "./services/book.service";
+import { LanguageService } from "./i18n/language.service";
 
 @Component({
   selector: "app-root",
-  imports: [RouterOutlet, TitlebarComponent],
+  imports: [TitlebarComponent, BookViewerComponent],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.css",
 })
 export class AppComponent {
-  greetingMessage = "";
+  private bookService = inject(BookService);
+  private languageService = inject(LanguageService);
 
-  greet(event: SubmitEvent, name: string): void {
-    event.preventDefault();
+  readonly book = this.bookService.book;
 
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    invoke<string>("greet", { name }).then((text) => {
-      this.greetingMessage = text;
-    });
+  translate(key: string): string {
+    return this.languageService.translate(key);
   }
 }
