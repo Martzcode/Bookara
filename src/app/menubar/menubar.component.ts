@@ -16,6 +16,8 @@ interface MenuItem {
   shortcut?: string;
   dividerAfter?: boolean;
   checked?: boolean;
+  header?: boolean;
+  submenu?: MenuItem[];
   action?: () => void;
 }
 
@@ -55,6 +57,7 @@ export class MenubarComponent {
           {
             id: "close",
             label: t("file.close"),
+            shortcut: "Ctrl+W",
             action: () => this.bookService.closeBook(),
           },
           { id: "save", label: t("file.save"), shortcut: "Ctrl+S" },
@@ -96,14 +99,20 @@ export class MenubarComponent {
         ],
       },
       {
-        id: "language",
-        label: t("menu.language"),
-        items: supportedLangs.map((code: Lang) => ({
-          id: `lang-${code}`,
-          label: languageNames[code],
-          checked: lang === code,
-          action: () => this.languageService.setLang(code),
-        })),
+        id: "settings",
+        label: t("menu.settings"),
+        items: [
+          {
+            id: "settings-language",
+            label: t("settings.language"),
+            submenu: supportedLangs.map((code: Lang): MenuItem => ({
+              id: `lang-${code}`,
+              label: languageNames[code],
+              checked: lang === code,
+              action: () => this.languageService.setLang(code),
+            })),
+          },
+        ],
       },
       {
         id: "help",
@@ -123,6 +132,8 @@ export class MenubarComponent {
 
   openMenu: string | null = null;
   focusedIndex: number | null = null;
+  openSubmenu: string | null = null;
+  submenuIndex: number | null = null;
 
   get currentItems(): MenuItem[] {
     const menu = this.menus().find((m) => m.id === this.openMenu);
@@ -132,54 +143,120 @@ export class MenubarComponent {
   toggleMenu(id: string): void {
     this.openMenu = this.openMenu === id ? null : id;
     this.focusedIndex = null;
+    this.openSubmenu = null;
+    this.submenuIndex = null;
   }
 
   onMenuEnter(id: string): void {
     if (this.openMenu !== null && this.openMenu !== id) {
       this.openMenu = id;
       this.focusedIndex = null;
+      this.openSubmenu = null;
+      this.submenuIndex = null;
     }
   }
 
   onItemClick(item: MenuItem, index: number): void {
     void index;
+    if (item.submenu) {
+      this.openSubmenu = this.openSubmenu === item.id ? null : item.id;
+      this.submenuIndex = this.openSubmenu ? 0 : null;
+      return;
+    }
     if (item.action) {
       item.action();
     }
     this.close();
   }
 
-  onItemEnter(index: number): void {
+  onItemEnter(index: number, item: MenuItem): void {
     this.focusedIndex = index;
+    if (item.submenu) {
+      if (this.openSubmenu !== item.id) {
+        this.openSubmenu = item.id;
+        this.submenuIndex = null;
+      }
+    } else if (this.openSubmenu) {
+      this.openSubmenu = null;
+      this.submenuIndex = null;
+    }
+  }
+
+  onSubmenuEnter(index: number): void {
+    this.submenuIndex = index;
+  }
+
+  onSubmenuClick(item: MenuItem): void {
+    if (item.action) {
+      item.action();
+    }
+    this.close();
   }
 
   close(): void {
     this.openMenu = null;
     this.focusedIndex = null;
+    this.openSubmenu = null;
+    this.submenuIndex = null;
   }
 
   onPanelKeydown(event: KeyboardEvent): void {
     const items = this.currentItems;
     if (items.length === 0) return;
 
+    const submenu =
+      this.openSubmenu !== null
+        ? items.find((i) => i.id === this.openSubmenu)?.submenu ?? null
+        : null;
+
     switch (event.key) {
       case "ArrowDown":
         event.preventDefault();
-        this.focusedIndex =
-          this.focusedIndex === null
-            ? 0
-            : (this.focusedIndex + 1) % items.length;
+        if (submenu) {
+          this.submenuIndex =
+            this.submenuIndex === null
+              ? 0
+              : (this.submenuIndex + 1) % submenu.length;
+        } else {
+          this.focusedIndex =
+            this.focusedIndex === null
+              ? 0
+              : (this.focusedIndex + 1) % items.length;
+        }
         break;
       case "ArrowUp":
         event.preventDefault();
-        this.focusedIndex =
-          this.focusedIndex === null || this.focusedIndex === 0
-            ? items.length - 1
-            : this.focusedIndex - 1;
+        if (submenu) {
+          this.submenuIndex =
+            this.submenuIndex === null || this.submenuIndex === 0
+              ? submenu.length - 1
+              : this.submenuIndex - 1;
+        } else {
+          this.focusedIndex =
+            this.focusedIndex === null || this.focusedIndex === 0
+              ? items.length - 1
+              : this.focusedIndex - 1;
+        }
+        break;
+      case "ArrowRight":
+        event.preventDefault();
+        if (!submenu && this.focusedIndex !== null && items[this.focusedIndex].submenu) {
+          this.openSubmenu = items[this.focusedIndex].id;
+          this.submenuIndex = 0;
+        }
+        break;
+      case "ArrowLeft":
+        event.preventDefault();
+        if (this.openSubmenu) {
+          this.openSubmenu = null;
+          this.submenuIndex = null;
+        }
         break;
       case "Enter":
         event.preventDefault();
-        if (this.focusedIndex !== null) {
+        if (submenu && this.submenuIndex !== null) {
+          this.onSubmenuClick(submenu[this.submenuIndex]);
+        } else if (this.focusedIndex !== null && !items[this.focusedIndex].header) {
           this.onItemClick(items[this.focusedIndex], this.focusedIndex);
         }
         break;
@@ -200,6 +277,12 @@ export class MenubarComponent {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "o") {
       event.preventDefault();
       void this.bookService.openBook();
+    } else if (
+      (event.ctrlKey || event.metaKey) &&
+      event.key.toLowerCase() === "w"
+    ) {
+      event.preventDefault();
+      this.bookService.closeBook();
     }
   }
 

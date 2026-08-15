@@ -22,10 +22,14 @@
               role="menuitem"
               class="menu-entry"
               [class.active]="focusedIndex === i"
-              (click)="onItemClick(item, i)"
-              (mouseenter)="onItemEnter(i)"
+              [class.header]="item.header"
+              (click)="item.header ? null : onItemClick(item, i)"
+              (mouseenter)="onItemEnter(i, item)"
             >
               <span class="menu-entry-label">{{ item.label }}</span>
+              @if (item.submenu) {
+                <span class="menu-entry-arrow">▶</span>
+              }
               @if (item.shortcut) {
                 <span class="menu-entry-shortcut">{{ item.shortcut }}</span>
               }
@@ -36,6 +40,25 @@
 
             @if (item.dividerAfter) {
               <div class="menu-divider"></div>
+            }
+
+            @if (item.submenu && openSubmenu === item.id) {
+              <div class="submenu-panel" role="menu">
+                @for (sub of item.submenu; track sub.id; let j = $index) {
+                  <div
+                    role="menuitem"
+                    class="menu-entry"
+                    [class.active]="submenuIndex === j"
+                    (click)="onSubmenuClick(sub)"
+                    (mouseenter)="onSubmenuEnter(j)"
+                  >
+                    <span class="menu-entry-label">{{ sub.label }}</span>
+                    @if (sub.checked) {
+                      <span class="menu-entry-check">✓</span>
+                    }
+                  </div>
+                }
+              </div>
             }
           }
         </div>
