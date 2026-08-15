@@ -4,8 +4,10 @@ import {
   HostListener,
   computed,
   inject,
+  signal,
 } from "@angular/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { AboutDialogComponent } from "../about-dialog/about-dialog.component";
 import { BookService } from "../services/book.service";
 import { LanguageService } from "../i18n/language.service";
 import { languageNames, supportedLangs, type Lang } from "../i18n/translations";
@@ -29,7 +31,7 @@ interface Menu {
 
 @Component({
   selector: "app-menubar",
-  imports: [],
+  imports: [AboutDialogComponent],
   templateUrl: "./menubar.component.html",
   styleUrl: "./menubar.component.css",
 })
@@ -38,6 +40,8 @@ export class MenubarComponent {
   private languageService = inject(LanguageService);
   private bookService = inject(BookService);
   private window = getCurrentWindow();
+
+  aboutOpen = signal(false);
 
   menus = computed<Menu[]>(() => {
     const t = (key: string) => this.languageService.translate(key);
@@ -118,12 +122,10 @@ export class MenubarComponent {
         id: "help",
         label: t("menu.help"),
         items: [
-          { id: "docs", label: t("help.docs") },
-          { id: "report", label: t("help.report") },
           {
             id: "about",
             label: t("help.about"),
-            dividerAfter: true,
+            action: () => this.aboutOpen.set(true),
           },
         ],
       },

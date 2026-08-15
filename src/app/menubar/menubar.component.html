@@ -66,3 +66,8 @@
     </div>
   }
 </nav>
+
+<app-about-dialog
+  [open]="aboutOpen()"
+  (close)="aboutOpen.set(false)"
+/>

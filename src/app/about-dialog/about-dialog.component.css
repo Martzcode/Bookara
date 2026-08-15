@@ -1,0 +1,96 @@
+.about-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+}
+
+.about-dialog {
+  width: 360px;
+  max-width: calc(100vw - 48px);
+  background: var(--color-panel-bg);
+  border: 1px solid var(--color-panel-border);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  color: var(--color-titlebar-text);
+  overflow: hidden;
+}
+
+.about-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 10px 16px;
+  background: var(--color-titlebar-bg);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.about-app-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.about-close {
+  border: none;
+  background: transparent;
+  color: var(--color-titlebar-text);
+  width: 26px;
+  height: 26px;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.about-close:hover {
+  background: var(--color-close-bg);
+  color: var(--color-close-text);
+}
+
+.about-body {
+  padding: 16px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.about-description {
+  margin: 0 0 12px;
+  color: var(--color-app-text);
+}
+
+.about-version {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--color-app-text);
+}
+
+.about-label {
+  display: inline-block;
+  min-width: 56px;
+  color: var(--color-shortcut);
+}
+
+.about-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 16px 14px;
+}
+
+.about-ok {
+  border: 1px solid var(--color-panel-border);
+  background: var(--color-titlebar-bg);
+  color: var(--color-titlebar-text);
+  font-size: 13px;
+  padding: 5px 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.about-ok:hover {
+  background: var(--color-hover-bg);
+}

@@ -1,0 +1,26 @@
+@if (open) {
+  <div class="about-backdrop" (click)="onBackdrop($event)">
+    <div class="about-dialog" role="dialog" aria-modal="true">
+      <div class="about-header">
+        <span class="about-app-name">{{ appName }}</span>
+        <button type="button" class="about-close" (click)="onClose()" aria-label="Close">
+          ✕
+        </button>
+      </div>
+      <div class="about-body">
+        <p class="about-description">{{ translate("about.description") }}</p>
+        <div class="about-version">
+          <div>
+            <span class="about-label">{{ translate("about.version") }}</span>
+            {{ appVersion }}
+          </div>
+        </div>
+      </div>
+      <div class="about-footer">
+        <button type="button" class="about-ok" (click)="onClose()">
+          {{ translate("about.ok") }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
