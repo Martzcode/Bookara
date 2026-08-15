@@ -1,4 +1,68 @@
-/* You can add global styles to this file, and also import other style files */
+/* Thèmes : clair (défaut) et sombre, adaptés automatiquement au thème du système */
+
+:root {
+  color-scheme: light;
+
+  /* Application */
+  --color-app-bg: #f6f6f6;
+  --color-app-text: #0f0f0f;
+
+  /* Barre de titre */
+  --color-titlebar-bg: #f3f3f3;
+  --color-titlebar-text: #333333;
+  --color-hover-bg: #e5e5e5;
+  --color-close-bg: #e81123;
+  --color-close-text: #ffffff;
+
+  /* Menus déroulants */
+  --color-panel-bg: #ffffff;
+  --color-panel-border: #d4d4d4;
+  --color-panel-hover-bg: #0060c0;
+  --color-panel-hover-text: #ffffff;
+  --color-shortcut: #808080;
+  --color-divider: #d4d4d4;
+
+  /* Accent */
+  --color-accent: #0060c0;
+
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    /* Application */
+    --color-app-bg: #1e1e1e;
+    --color-app-text: #cccccc;
+
+    /* Barre de titre */
+    --color-titlebar-bg: #2d2d2d;
+    --color-titlebar-text: #cccccc;
+    --color-hover-bg: #3e3e3e;
+    --color-close-bg: #e81123;
+    --color-close-text: #ffffff;
+
+    /* Menus déroulants */
+    --color-panel-bg: #2d2d2d;
+    --color-panel-border: #454545;
+    --color-panel-hover-bg: #007fd4;
+    --color-panel-hover-text: #ffffff;
+    --color-shortcut: #808080;
+    --color-divider: #454545;
+
+    /* Accent */
+    --color-accent: #007fd4;
+  }
+}
 
 * {
   margin: 0;
@@ -6,9 +70,9 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
-  background: #1e1e1e;
-  color: #cccccc;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: var(--color-app-bg);
+  color: var(--color-app-text);
 }
