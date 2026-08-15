@@ -70,8 +70,18 @@
 
 .about-label {
   display: inline-block;
-  min-width: 56px;
+  min-width: 90px;
   color: var(--color-shortcut);
+}
+
+.about-author {
+  color: var(--color-accent);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.about-author:hover {
+  text-decoration: underline;
 }
 
 .about-footer {

@@ -14,6 +14,12 @@
             <span class="about-label">{{ translate("about.version") }}</span>
             {{ appVersion }}
           </div>
+          <div>
+            <span class="about-label">{{ translate("about.developedBy") }}</span>
+            <a class="about-author" href="#" (click)="openAuthorProfile(); $event.preventDefault()">
+              Martzcode
+            </a>
+          </div>
         </div>
       </div>
       <div class="about-footer">

@@ -8,6 +8,7 @@ import {
   inject,
 } from "@angular/core";
 import { getName, getVersion } from "@tauri-apps/api/app";
+import { openUrl } from "@tauri-apps/plugin-opener";
 import { LanguageService } from "../i18n/language.service";
 
 @Component({
@@ -24,9 +25,14 @@ export class AboutDialogComponent implements OnInit {
 
   appName = "Bookara";
   appVersion = "";
+  readonly authorUrl = "https://github.com/Martzcode";
 
   translate(key: string): string {
     return this.languageService.translate(key);
+  }
+
+  openAuthorProfile(): void {
+    void openUrl(this.authorUrl);
   }
 
   ngOnInit(): void {
